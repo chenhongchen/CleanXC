@@ -51,17 +51,27 @@
 }
 
 - (BOOL)applicationShouldHandleReopen:(NSApplication *)sender hasVisibleWindows:(BOOL)flag {
-    if (!flag) {
-        [self.window makeKeyAndOrderFront:nil];
-        [NSApp activateIgnoringOtherApps:YES];
+    [NSApp activateIgnoringOtherApps:YES];
+    if (self.window) {
+        if (self.window.isMiniaturized) {
+            [self.window deminiaturize:sender];
+        }
+        [self.window makeKeyAndOrderFront:sender];
     }
     return YES;
 }
 
 - (void)applicationDidBecomeActive:(NSNotification *)notification {
     if (self.window) {
+        if (self.window.isMiniaturized) {
+            [self.window deminiaturize:nil];
+        }
         [self.window makeKeyAndOrderFront:nil];
     }
+}
+
+- (BOOL)applicationShouldTerminateAfterLastWindowClosed:(NSApplication *)sender {
+    return YES;
 }
 
 - (void)applicationWillTerminate:(NSNotification *)aNotification {
