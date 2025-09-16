@@ -1,0 +1,546 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 77;
+	objects = {
+
+/* Begin PBXContainerItemProxy section */
+		EAB2EDCE2E78EF78001C0F21 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = EAB2EDB02E78EF77001C0F21 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = EAB2EDB72E78EF77001C0F21;
+			remoteInfo = CleanXC;
+		};
+		EAB2EDD82E78EF78001C0F21 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = EAB2EDB02E78EF77001C0F21 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = EAB2EDB72E78EF77001C0F21;
+			remoteInfo = CleanXC;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		EAB2EDB82E78EF77001C0F21 /* CleanXC.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = CleanXC.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		EAB2EDCD2E78EF78001C0F21 /* CleanXCTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = CleanXCTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		EAB2EDD72E78EF78001C0F21 /* CleanXCUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = CleanXCUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+/* End PBXFileReference section */
+
+/* Begin PBXFileSystemSynchronizedRootGroup section */
+		EAB2EDBA2E78EF77001C0F21 /* CleanXC */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = CleanXC;
+			sourceTree = "<group>";
+		};
+		EAB2EDD02E78EF78001C0F21 /* CleanXCTests */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = CleanXCTests;
+			sourceTree = "<group>";
+		};
+		EAB2EDDA2E78EF78001C0F21 /* CleanXCUITests */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = CleanXCUITests;
+			sourceTree = "<group>";
+		};
+/* End PBXFileSystemSynchronizedRootGroup section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		EAB2EDB52E78EF77001C0F21 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		EAB2EDCA2E78EF78001C0F21 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		EAB2EDD42E78EF78001C0F21 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		EAB2EDAF2E78EF77001C0F21 = {
+			isa = PBXGroup;
+			children = (
+				EAB2EDBA2E78EF77001C0F21 /* CleanXC */,
+				EAB2EDD02E78EF78001C0F21 /* CleanXCTests */,
+				EAB2EDDA2E78EF78001C0F21 /* CleanXCUITests */,
+				EAB2EDB92E78EF77001C0F21 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		EAB2EDB92E78EF77001C0F21 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				EAB2EDB82E78EF77001C0F21 /* CleanXC.app */,
+				EAB2EDCD2E78EF78001C0F21 /* CleanXCTests.xctest */,
+				EAB2EDD72E78EF78001C0F21 /* CleanXCUITests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		EAB2EDB72E78EF77001C0F21 /* CleanXC */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = EAB2EDE12E78EF78001C0F21 /* Build configuration list for PBXNativeTarget "CleanXC" */;
+			buildPhases = (
+				EAB2EDB42E78EF77001C0F21 /* Sources */,
+				EAB2EDB52E78EF77001C0F21 /* Frameworks */,
+				EAB2EDB62E78EF77001C0F21 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			fileSystemSynchronizedGroups = (
+				EAB2EDBA2E78EF77001C0F21 /* CleanXC */,
+			);
+			name = CleanXC;
+			packageProductDependencies = (
+			);
+			productName = CleanXC;
+			productReference = EAB2EDB82E78EF77001C0F21 /* CleanXC.app */;
+			productType = "com.apple.product-type.application";
+		};
+		EAB2EDCC2E78EF78001C0F21 /* CleanXCTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = EAB2EDE42E78EF78001C0F21 /* Build configuration list for PBXNativeTarget "CleanXCTests" */;
+			buildPhases = (
+				EAB2EDC92E78EF78001C0F21 /* Sources */,
+				EAB2EDCA2E78EF78001C0F21 /* Frameworks */,
+				EAB2EDCB2E78EF78001C0F21 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				EAB2EDCF2E78EF78001C0F21 /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				EAB2EDD02E78EF78001C0F21 /* CleanXCTests */,
+			);
+			name = CleanXCTests;
+			packageProductDependencies = (
+			);
+			productName = CleanXCTests;
+			productReference = EAB2EDCD2E78EF78001C0F21 /* CleanXCTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+		EAB2EDD62E78EF78001C0F21 /* CleanXCUITests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = EAB2EDE72E78EF78001C0F21 /* Build configuration list for PBXNativeTarget "CleanXCUITests" */;
+			buildPhases = (
+				EAB2EDD32E78EF78001C0F21 /* Sources */,
+				EAB2EDD42E78EF78001C0F21 /* Frameworks */,
+				EAB2EDD52E78EF78001C0F21 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				EAB2EDD92E78EF78001C0F21 /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				EAB2EDDA2E78EF78001C0F21 /* CleanXCUITests */,
+			);
+			name = CleanXCUITests;
+			packageProductDependencies = (
+			);
+			productName = CleanXCUITests;
+			productReference = EAB2EDD72E78EF78001C0F21 /* CleanXCUITests.xctest */;
+			productType = "com.apple.product-type.bundle.ui-testing";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		EAB2EDB02E78EF77001C0F21 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = 1;
+				LastUpgradeCheck = 1640;
+				TargetAttributes = {
+					EAB2EDB72E78EF77001C0F21 = {
+						CreatedOnToolsVersion = 16.4;
+					};
+					EAB2EDCC2E78EF78001C0F21 = {
+						CreatedOnToolsVersion = 16.4;
+						TestTargetID = EAB2EDB72E78EF77001C0F21;
+					};
+					EAB2EDD62E78EF78001C0F21 = {
+						CreatedOnToolsVersion = 16.4;
+						TestTargetID = EAB2EDB72E78EF77001C0F21;
+					};
+				};
+			};
+			buildConfigurationList = EAB2EDB32E78EF77001C0F21 /* Build configuration list for PBXProject "CleanXC" */;
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = EAB2EDAF2E78EF77001C0F21;
+			minimizedProjectReferenceProxies = 1;
+			preferredProjectObjectVersion = 77;
+			productRefGroup = EAB2EDB92E78EF77001C0F21 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				EAB2EDB72E78EF77001C0F21 /* CleanXC */,
+				EAB2EDCC2E78EF78001C0F21 /* CleanXCTests */,
+				EAB2EDD62E78EF78001C0F21 /* CleanXCUITests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		EAB2EDB62E78EF77001C0F21 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		EAB2EDCB2E78EF78001C0F21 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		EAB2EDD52E78EF78001C0F21 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		EAB2EDB42E78EF77001C0F21 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		EAB2EDC92E78EF78001C0F21 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		EAB2EDD32E78EF78001C0F21 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		EAB2EDCF2E78EF78001C0F21 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = EAB2EDB72E78EF77001C0F21 /* CleanXC */;
+			targetProxy = EAB2EDCE2E78EF78001C0F21 /* PBXContainerItemProxy */;
+		};
+		EAB2EDD92E78EF78001C0F21 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = EAB2EDB72E78EF77001C0F21 /* CleanXC */;
+			targetProxy = EAB2EDD82E78EF78001C0F21 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		EAB2EDDF2E78EF78001C0F21 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				DEVELOPMENT_TEAM = B64R2THW83;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MACOSX_DEPLOYMENT_TARGET = 15.5;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = macosx;
+			};
+			name = Debug;
+		};
+		EAB2EDE02E78EF78001C0F21 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEVELOPMENT_TEAM = B64R2THW83;
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MACOSX_DEPLOYMENT_TARGET = 15.5;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				SDKROOT = macosx;
+			};
+			name = Release;
+		};
+		EAB2EDE22E78EF78001C0F21 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = CleanXC/CleanXC.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = B64R2THW83;
+				ENABLE_HARDENED_RUNTIME = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				INFOPLIST_KEY_NSPrincipalClass = NSApplication;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.hc.CleanXC;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				REGISTER_APP_GROUPS = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+			};
+			name = Debug;
+		};
+		EAB2EDE32E78EF78001C0F21 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = CleanXC/CleanXC.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = B64R2THW83;
+				ENABLE_HARDENED_RUNTIME = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				INFOPLIST_KEY_NSPrincipalClass = NSApplication;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.hc.CleanXC;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				REGISTER_APP_GROUPS = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+			};
+			name = Release;
+		};
+		EAB2EDE52E78EF78001C0F21 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = B64R2THW83;
+				GENERATE_INFOPLIST_FILE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 15.5;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.hc.CleanXCTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/CleanXC.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/CleanXC";
+			};
+			name = Debug;
+		};
+		EAB2EDE62E78EF78001C0F21 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = B64R2THW83;
+				GENERATE_INFOPLIST_FILE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 15.5;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.hc.CleanXCTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/CleanXC.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/CleanXC";
+			};
+			name = Release;
+		};
+		EAB2EDE82E78EF78001C0F21 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = B64R2THW83;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.hc.CleanXCUITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				TEST_TARGET_NAME = CleanXC;
+			};
+			name = Debug;
+		};
+		EAB2EDE92E78EF78001C0F21 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = B64R2THW83;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.hc.CleanXCUITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				TEST_TARGET_NAME = CleanXC;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		EAB2EDB32E78EF77001C0F21 /* Build configuration list for PBXProject "CleanXC" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				EAB2EDDF2E78EF78001C0F21 /* Debug */,
+				EAB2EDE02E78EF78001C0F21 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		EAB2EDE12E78EF78001C0F21 /* Build configuration list for PBXNativeTarget "CleanXC" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				EAB2EDE22E78EF78001C0F21 /* Debug */,
+				EAB2EDE32E78EF78001C0F21 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		EAB2EDE42E78EF78001C0F21 /* Build configuration list for PBXNativeTarget "CleanXCTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				EAB2EDE52E78EF78001C0F21 /* Debug */,
+				EAB2EDE62E78EF78001C0F21 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		EAB2EDE72E78EF78001C0F21 /* Build configuration list for PBXNativeTarget "CleanXCUITests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				EAB2EDE82E78EF78001C0F21 /* Debug */,
+				EAB2EDE92E78EF78001C0F21 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = EAB2EDB02E78EF77001C0F21 /* Project object */;
+}
