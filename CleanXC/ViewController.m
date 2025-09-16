@@ -11,6 +11,7 @@
 
 @property (nonatomic, strong) NSMutableArray *cleanItems; // root items
 @property (nonatomic, strong) NSMutableSet *selectedDeviceSupportChildren; // full paths
+@property (nonatomic, strong) NSMutableSet *selectedRootPaths; // root paths selected for cleanup
 @property (nonatomic, strong) NSOperationQueue *operationQueue;
 
 @end
@@ -26,7 +27,7 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    
+
     NSLog(@"ViewController viewDidLoad called");
     
     [self setupUI];
@@ -92,14 +93,18 @@
     descriptionColumn.maxWidth = 300;
     [self.outlineView addTableColumn:descriptionColumn];
 
-    // 复选列（仅在子项显示）
+    // 复选列（添加更宽的列，便于根据层级缩进）
     NSTableColumn *checkColumn = [[NSTableColumn alloc] initWithIdentifier:@"checked"];
     checkColumn.title = @"选择";
-    checkColumn.width = 28;
-    checkColumn.minWidth = 28;
+    checkColumn.width = 60;
+    checkColumn.minWidth = 40;
     [self.outlineView addTableColumn:checkColumn];
     // 把复选列移动到最左边，确保可见
     [self.outlineView moveColumn:self.outlineView.numberOfColumns - 1 toColumn:0];
+    // 指定“目录名称”列作为大纲列，确保展开箭头始终在名称列
+    self.outlineView.outlineTableColumn = nameColumn;
+    // 行高稍微增大，便于勾选框垂直居中
+    self.outlineView.rowHeight = 22.0;
     
     // 创建滚动视图
     NSScrollView *scrollView = [[NSScrollView alloc] init];
@@ -183,6 +188,7 @@
     self.operationQueue.maxConcurrentOperationCount = 1;
 
     self.selectedDeviceSupportChildren = [NSMutableSet set];
+    self.selectedRootPaths = [NSMutableSet set];
 }
 
 - (void)setupCleanItems {
@@ -225,6 +231,10 @@
                 }
             }
             item[@"children"] = children;
+        }
+        // 根目录默认选中
+        if (item[@"path"]) {
+            [self.selectedRootPaths addObject:item[@"path"]];
         }
         [self.cleanItems addObject:item];
     }
@@ -316,6 +326,18 @@
 }
 
 - (void)refreshButtonClicked:(id)sender {
+    // 恢复所有项的状态为“就绪”，并将大小显示为“计算中...”
+    for (NSMutableDictionary *item in self.cleanItems) {
+        item[@"status"] = @"就绪";
+        item[@"sizeString"] = @"计算中...";
+        if (item[@"children"]) {
+            for (NSMutableDictionary *child in item[@"children"]) {
+                child[@"status"] = @"就绪";
+                child[@"sizeString"] = @"计算中...";
+            }
+        }
+    }
+    [self.outlineView reloadData];
     [self calculateSizes];
 }
 
@@ -338,6 +360,7 @@
             long long size = [item[@"size"] longLongValue];
             
             NSFileManager *fileManager = [NSFileManager defaultManager];
+            __block BOOL didClean = NO;
             if ([item[@"name"] isEqualToString:@"iOS DeviceSupport"] && item[@"children"]) {
                 NSMutableArray *children = item[@"children"];
                 NSMutableIndexSet *indexesToRemove = [NSMutableIndexSet indexSet];
@@ -350,10 +373,12 @@
                         if (!err) {
                             totalCleaned += [child[@"size"] longLongValue];
                             [indexesToRemove addIndex:idx];
+                            didClean = YES;
                         }
                     } else {
                         // 如果本就不存在，也从列表移除
                         [indexesToRemove addIndex:idx];
+                        didClean = YES;
                     }
                 }];
                 // 从数据源移除已删除的子项，并从选择集中去除
@@ -365,18 +390,22 @@
                 
             } else {
                 if ([fileManager fileExistsAtPath:path]) {
-                    NSError *error;
-                    [fileManager removeItemAtPath:path error:&error];
-                    if (!error) {
-                        totalCleaned += size;
+                    // 其它根目录，仅当被勾选时才清理
+                    if ([self.selectedRootPaths containsObject:path]) {
+                        NSError *error;
+                        [fileManager removeItemAtPath:path error:&error];
+                        if (!error) {
+                            totalCleaned += size;
+                            didClean = YES;
+                        }
                     }
                 }
             }
             
             dispatch_async(dispatch_get_main_queue(), ^{
-                item[@"status"] = @"清理完成";
                 if ([item[@"name"] isEqualToString:@"iOS DeviceSupport"]) {
-                    // 重新计算父项显示大小（按剩余子项大小之和）
+                    item[@"status"] = didClean ? @"清理完成" : @"跳过";
+                    // 重新计算父项显示大小（按剩余子项大小之和，不受是否勾选影响）
                     long long sum = 0;
                     for (NSDictionary *child in item[@"children"]) {
                         sum += [child[@"size"] longLongValue];
@@ -385,8 +414,14 @@
                     item[@"sizeString"] = [self formatFileSize:sum];
                     [self.outlineView reloadItem:item reloadChildren:YES];
                 } else {
-                    item[@"size"] = @0;
-                    item[@"sizeString"] = @"0 B";
+                    if (didClean) {
+                        item[@"status"] = @"清理完成";
+                        item[@"size"] = @0;
+                        item[@"sizeString"] = @"0 B";
+                    } else {
+                        item[@"status"] = @"跳过";
+                        // 未清理，保持原有大小不变
+                    }
                     [self.outlineView reloadData];
                 }
             });
@@ -440,40 +475,118 @@
     NSString *identifier = tableColumn.identifier;
 
     if ([identifier isEqualToString:@"checked"]) {
-        // 仅对 iOS DeviceSupport 的子项显示复选框
-        if (![self parentIsDeviceSupport:item]) {
-            return nil;
-        }
-        NSButton *checkbox = [outlineView makeViewWithIdentifier:@"checkboxCell" owner:self];
-        if (!checkbox) {
-            checkbox = [[NSButton alloc] initWithFrame:NSMakeRect(0, 0, 20, 20)];
-            checkbox.identifier = @"checkboxCell";
+        // 使用容器单元格承载复选框，便于通过约束实现缩进
+        NSTableCellView *cell = [outlineView makeViewWithIdentifier:@"checkedCell" owner:self];
+        NSButton *checkbox = nil;
+        if (!cell) {
+            cell = [[NSTableCellView alloc] initWithFrame:NSMakeRect(0, 0, outlineView.frame.size.width, outlineView.rowHeight)];
+            cell.identifier = @"checkedCell";
+            checkbox = [[NSButton alloc] initWithFrame:NSMakeRect(0, 0, 18, 18)];
+            checkbox.translatesAutoresizingMaskIntoConstraints = NO;
             checkbox.buttonType = NSButtonTypeSwitch;
             checkbox.title = @"";
             checkbox.target = self;
             checkbox.action = @selector(onCheckboxToggled:);
+            checkbox.tag = 1001; // 用于后续查找
+            [cell addSubview:checkbox];
+            [NSLayoutConstraint activateConstraints:@[
+                [checkbox.centerYAnchor constraintEqualToAnchor:cell.centerYAnchor],
+                [checkbox.widthAnchor constraintEqualToConstant:18.0],
+                [checkbox.heightAnchor constraintEqualToConstant:18.0]
+            ]];
+            // 默认的 leading 约束（会在下面根据层级调整常量）
+            NSLayoutConstraint *leading = [checkbox.leadingAnchor constraintEqualToAnchor:cell.leadingAnchor constant:6.0];
+            leading.active = YES;
+        } else {
+            checkbox = (NSButton *)[cell viewWithTag:1001];
         }
+        // 绑定 representedObject，防止复用后错位
+        cell.objectValue = dict;
         NSString *path = dict[@"path"];
-        checkbox.state = [self.selectedDeviceSupportChildren containsObject:path] ? NSControlStateValueOn : NSControlStateValueOff;
+        BOOL isChildOfDeviceSupport = [self parentIsDeviceSupport:item];
+        BOOL isDeviceSupportRoot = (dict[@"children"] != nil);
+
+        if (isChildOfDeviceSupport) {
+            checkbox.state = [self.selectedDeviceSupportChildren containsObject:path] ? NSControlStateValueOn : NSControlStateValueOff;
+            checkbox.allowsMixedState = NO;
+        } else if (isDeviceSupportRoot) {
+            // 根：iOS DeviceSupport（父），根据子项选择情况显示
+            NSArray *children = dict[@"children"] ?: @[];
+            NSUInteger selectedCount = 0;
+            for (NSDictionary *c in children) {
+                if ([self.selectedDeviceSupportChildren containsObject:c[@"path"]]) selectedCount++;
+            }
+            if (selectedCount == 0) {
+                checkbox.state = NSControlStateValueOff;
+            } else if (selectedCount == children.count) {
+                checkbox.state = NSControlStateValueOn;
+            } else {
+                checkbox.state = NSControlStateValueMixed;
+            }
+            checkbox.allowsMixedState = YES;
+        } else {
+            // 其它根目录
+            checkbox.state = [self.selectedRootPaths containsObject:path] ? NSControlStateValueOn : NSControlStateValueOff;
+            checkbox.allowsMixedState = NO;
+        }
+        // 调整缩进：更新 leading 约束的常量
+        CGFloat insetX = isChildOfDeviceSupport ? 24.0 : 6.0;
+        NSLayoutConstraint *leadingConstraint = nil;
+        for (NSLayoutConstraint *c in cell.constraints) {
+            if ((c.firstItem == checkbox && c.firstAttribute == NSLayoutAttributeLeading) ||
+                (c.secondItem == checkbox && c.secondAttribute == NSLayoutAttributeLeading)) {
+                leadingConstraint = c;
+                break;
+            }
+        }
+        if (leadingConstraint) {
+            leadingConstraint.constant = insetX;
+        } else {
+            [[checkbox leadingAnchor] constraintEqualToAnchor:cell.leadingAnchor constant:insetX].active = YES;
+        }
         checkbox.enabled = YES;
-        checkbox.tag = (NSInteger)(__bridge void *)item; // unsafe but ok for session
-        return checkbox;
+        return cell;
     }
 
     NSTableCellView *cell = [outlineView makeViewWithIdentifier:identifier owner:self];
     if (!cell) {
-        cell = [[NSTableCellView alloc] initWithFrame:NSMakeRect(0, 0, tableColumn.width, 22)];
+        cell = [[NSTableCellView alloc] initWithFrame:NSMakeRect(0, 0, tableColumn.width, self.outlineView.rowHeight)];
         cell.identifier = identifier;
-        NSTextField *text = [[NSTextField alloc] initWithFrame:cell.bounds];
-        text.autoresizingMask = NSViewWidthSizable | NSViewHeightSizable;
+        NSTextField *text = [[NSTextField alloc] initWithFrame:NSZeroRect];
+        text.translatesAutoresizingMaskIntoConstraints = NO;
         text.bezeled = NO;
         text.drawsBackground = NO;
         text.editable = NO;
         text.selectable = NO;
+        text.usesSingleLineMode = YES;
+        text.lineBreakMode = NSLineBreakByTruncatingTail;
+        if ([text.cell isKindOfClass:[NSTextFieldCell class]]) {
+            NSTextFieldCell *textCell = (NSTextFieldCell *)text.cell;
+            textCell.wraps = NO;
+            textCell.truncatesLastVisibleLine = YES;
+        }
+        if ([text respondsToSelector:@selector(setAllowsDefaultTighteningForTruncation:)]) {
+            text.allowsDefaultTighteningForTruncation = YES;
+        }
         [cell addSubview:text];
+        [NSLayoutConstraint activateConstraints:@[
+            [text.centerYAnchor constraintEqualToAnchor:cell.centerYAnchor],
+            [text.leadingAnchor constraintEqualToAnchor:cell.leadingAnchor constant:0.0],
+            [text.trailingAnchor constraintEqualToAnchor:cell.trailingAnchor constant:0.0]
+        ]];
         cell.textField = text;
     }
+    // 绑定 representedObject，避免复用后显示到错误项
+    cell.objectValue = dict;
 
+    // 无论哪一列，都强制单行并尾部省略号
+    cell.textField.usesSingleLineMode = YES;
+    cell.textField.lineBreakMode = NSLineBreakByTruncatingTail;
+    if ([cell.textField.cell isKindOfClass:[NSTextFieldCell class]]) {
+        NSTextFieldCell *textCell = (NSTextFieldCell *)cell.textField.cell;
+        textCell.wraps = NO;
+        textCell.truncatesLastVisibleLine = YES;
+    }
     if ([identifier isEqualToString:@"name"]) {
         cell.textField.stringValue = dict[@"name"] ?: @"";
     } else if ([identifier isEqualToString:@"path"]) {
@@ -503,11 +616,45 @@
     NSInteger row = [self.outlineView rowForView:sender];
     if (row == -1) return;
     id item = [self.outlineView itemAtRow:row];
-    NSString *path = [(NSDictionary *)item objectForKey:@"path"];
-    if (sender.state == NSControlStateValueOn) {
-        [self.selectedDeviceSupportChildren addObject:path];
+    NSDictionary *dict = (NSDictionary *)item;
+    NSString *path = dict[@"path"];
+
+    BOOL isChildOfDeviceSupport = [self parentIsDeviceSupport:item];
+    BOOL isDeviceSupportRoot = (dict[@"children"] != nil);
+
+    if (isChildOfDeviceSupport) {
+        if (sender.state == NSControlStateValueOn) {
+            [self.selectedDeviceSupportChildren addObject:path];
+        } else {
+            [self.selectedDeviceSupportChildren removeObject:path];
+        }
+        // 刷新父节点以呈现混合态/勾选态
+        for (NSDictionary *root in self.cleanItems) {
+            if ([root[@"name"] isEqualToString:@"iOS DeviceSupport"]) {
+                [self.outlineView reloadItem:root reloadChildren:NO];
+                break;
+            }
+        }
+    } else if (isDeviceSupportRoot) {
+        // 勾选/取消勾选父节点 => 全选/全不选子节点
+        NSArray *children = dict[@"children"] ?: @[];
+        if (sender.state == NSControlStateValueOff) {
+            for (NSDictionary *c in children) {
+                [self.selectedDeviceSupportChildren removeObject:c[@"path"]];
+            }
+        } else { // On 或 Mixed -> 设为全选
+            for (NSDictionary *c in children) {
+                [self.selectedDeviceSupportChildren addObject:c[@"path"]];
+            }
+        }
+        [self.outlineView reloadItem:item reloadChildren:YES];
     } else {
-        [self.selectedDeviceSupportChildren removeObject:path];
+        // 其它根目录
+        if (sender.state == NSControlStateValueOn) {
+            [self.selectedRootPaths addObject:path];
+        } else {
+            [self.selectedRootPaths removeObject:path];
+        }
     }
 }
 
