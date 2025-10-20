@@ -205,7 +205,8 @@
         @{@"name": @"Simulator Runtimes", @"path": [NSHomeDirectory() stringByAppendingPathComponent:@"Library/Developer/CoreSimulator/Profiles/Runtimes"], @"description": @"旧版本的模拟器支持"},
         @{@"name": @"XCPGDevices", @"path": [NSHomeDirectory() stringByAppendingPathComponent:@"Library/Developer/XCPGDevices"], @"description": @"playground 的项目缓存"},
         @{@"name": @"Documentation", @"path": [NSHomeDirectory() stringByAppendingPathComponent:@"Library/Developer/Shared/Documentation/DocSets"], @"description": @"旧的文档"},
-        @{@"name": @"iPhoneSimulator SDKs", @"path": @"/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs", @"description": @"模拟器中的SDK版本"}
+        @{@"name": @"iPhoneSimulator SDKs", @"path": @"/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs", @"description": @"模拟器中的SDK版本"},
+        @{@"name": @"CoreDevice AppInstallationBinaryDeltas", @"path": [NSHomeDirectory() stringByAppendingPathComponent:@"Library/Containers/com.apple.CoreDevice.CoreDeviceService/Data/Library/Caches/AppInstallationBinaryDeltas"], @"description": @"CoreDevice 增量安装缓存"}
     ];
     
     for (NSDictionary *pathInfo in paths) {
