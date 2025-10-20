@@ -56,6 +56,15 @@
     self.outlineView.delegate = self;
     self.outlineView.headerView = [[NSTableHeaderView alloc] init];
     self.outlineView.translatesAutoresizingMaskIntoConstraints = NO;
+    // 右键菜单
+    NSMenu *ctxMenu = [[NSMenu alloc] initWithTitle:@"ContextMenu"];
+    NSMenuItem *deleteItem = [[NSMenuItem alloc] initWithTitle:@"删除" action:@selector(contextDelete:) keyEquivalent:@""];
+    deleteItem.target = self;
+    [ctxMenu addItem:deleteItem];
+    NSMenuItem *revealItem = [[NSMenuItem alloc] initWithTitle:@"在 Finder 中显示" action:@selector(contextReveal:) keyEquivalent:@""];
+    revealItem.target = self;
+    [ctxMenu addItem:revealItem];
+    self.outlineView.menu = ctxMenu;
     
     // 创建表格列
     NSTableColumn *nameColumn = [[NSTableColumn alloc] initWithIdentifier:@"name"];
@@ -233,9 +242,13 @@
             }
             item[@"children"] = children;
         }
-        // 根目录默认选中
+        // 根目录默认选中（跳过系统受保护路径，如 /Applications 下的 SDKs）
         if (item[@"path"]) {
-            [self.selectedRootPaths addObject:item[@"path"]];
+            NSString *p = item[@"path"];
+            BOOL isSystemProtected = [p hasPrefix:@"/Applications/"];
+            if (!isSystemProtected) {
+                [self.selectedRootPaths addObject:p];
+            }
         }
         [self.cleanItems addObject:item];
     }
@@ -453,6 +466,9 @@
                             didClean = YES;
                         } else {
                             NSLog(@"Failed to delete %@: %@", path, error.localizedDescription);
+                            if ([error.domain isEqualToString:NSCocoaErrorDomain] && (error.code == NSFileWriteNoPermissionError || error.code == NSFileWriteNoPermissionError)) {
+                                item[@"status"] = @"权限不足";
+                            }
                         }
                     }
                 }
@@ -475,7 +491,9 @@
                         item[@"size"] = @0;
                         item[@"sizeString"] = @"0 B";
                     } else {
-                        item[@"status"] = @"跳过";
+                        if (![item[@"status"] isEqualToString:@"权限不足"]) {
+                            item[@"status"] = @"跳过";
+                        }
                         // 未清理，保持原有大小不变
                     }
                     [self.outlineView reloadData];
@@ -504,6 +522,116 @@
             [alert beginSheetModalForWindow:self.view.window completionHandler:nil];
         });
     });
+}
+
+#pragma mark - Context Menu Actions
+
+- (id)currentMenuItemObject {
+    NSInteger row = self.outlineView.clickedRow;
+    if (row < 0) {
+        NSEvent *event = [NSApp currentEvent];
+        if (event) {
+            NSPoint p = [self.outlineView convertPoint:event.locationInWindow fromView:nil];
+            row = [self.outlineView rowAtPoint:p];
+        }
+    }
+    if (row < 0) return nil;
+    return [self.outlineView itemAtRow:row];
+}
+
+- (void)contextDelete:(id)sender {
+    id item = [self currentMenuItemObject];
+    if (!item) return;
+    NSMutableDictionary *dict = (NSMutableDictionary *)item;
+    NSString *path = dict[@"path"];
+    if (path.length == 0) return;
+    BOOL isDeviceSupportParent = (dict[@"children"] != nil);
+
+    NSAlert *alert = [[NSAlert alloc] init];
+    alert.messageText = @"确认删除";
+    alert.informativeText = [NSString stringWithFormat:@"确定要删除%@吗？\n%@", isDeviceSupportParent ? @"所选子目录" : @"此目录", path];
+    alert.alertStyle = NSAlertStyleWarning;
+    [alert addButtonWithTitle:@"删除"];
+    [alert addButtonWithTitle:@"取消"];
+    [alert beginSheetModalForWindow:self.view.window completionHandler:^(NSModalResponse returnCode) {
+        if (returnCode != NSAlertFirstButtonReturn) return;
+        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            NSError *err = nil;
+            BOOL ok = NO;
+            if (isDeviceSupportParent) {
+                // 删除被勾选的子项
+                NSMutableArray *children = dict[@"children"];
+                NSMutableIndexSet *toRemove = [NSMutableIndexSet indexSet];
+                for (NSUInteger i = 0; i < children.count; i++) {
+                    NSDictionary *child = children[i];
+                    NSString *cpath = child[@"path"];
+                    if (![self.selectedDeviceSupportChildren containsObject:cpath]) continue;
+                    NSError *cerr = nil;
+                    if ([self removeItemRobustAtPath:cpath error:&cerr]) {
+                        [toRemove addIndex:i];
+                        [self.selectedDeviceSupportChildren removeObject:cpath];
+                        ok = YES;
+                    } else {
+                        err = cerr ?: err;
+                    }
+                }
+                if (toRemove.count > 0) {
+                    [children removeObjectsAtIndexes:toRemove];
+                }
+            } else {
+                ok = [self removeItemRobustAtPath:path error:&err];
+            }
+            dispatch_async(dispatch_get_main_queue(), ^{
+                if (ok) {
+                    if (isDeviceSupportParent) {
+                        long long sum = 0;
+                        for (NSDictionary *child in dict[@"children"]) {
+                            sum += [child[@"size"] longLongValue];
+                        }
+                        dict[@"size"] = @(sum);
+                        dict[@"sizeString"] = [self formatFileSize:sum];
+                        dict[@"status"] = @"清理完成";
+                        [self.outlineView reloadItem:dict reloadChildren:YES];
+                    } else {
+                        dict[@"status"] = @"清理完成";
+                        dict[@"size"] = @0;
+                        dict[@"sizeString"] = @"0 B";
+                        [self.outlineView reloadData];
+                    }
+                    long long currentTotal = 0;
+                    for (NSDictionary *root in self.cleanItems) {
+                        currentTotal += [root[@"size"] longLongValue];
+                    }
+                    self.totalSizeLabel.stringValue = [NSString stringWithFormat:@"总大小: %@", [self formatFileSize:currentTotal]];
+                } else {
+                    NSAlert *fail = [[NSAlert alloc] init];
+                    fail.messageText = @"删除失败";
+                    fail.informativeText = err ? err.localizedDescription : @"未知错误";
+                    [fail addButtonWithTitle:@"确定"];
+                    [fail beginSheetModalForWindow:self.view.window completionHandler:nil];
+                }
+            });
+        });
+    }];
+}
+
+- (void)contextReveal:(id)sender {
+    id item = [self currentMenuItemObject];
+    if (!item) return;
+    NSDictionary *dict = (NSDictionary *)item;
+    NSString *path = dict[@"path"];
+    if (path.length == 0) return;
+    BOOL isDir = NO;
+    if (![[NSFileManager defaultManager] fileExistsAtPath:path isDirectory:&isDir]) {
+        NSAlert *fail = [[NSAlert alloc] init];
+        fail.messageText = @"路径不存在";
+        fail.informativeText = path;
+        [fail addButtonWithTitle:@"确定"];
+        [fail beginSheetModalForWindow:self.view.window completionHandler:nil];
+        return;
+    }
+    NSURL *url = [NSURL fileURLWithPath:path];
+    [[NSWorkspace sharedWorkspace] activateFileViewerSelectingURLs:@[url]];
 }
 
 #pragma mark - NSOutlineViewDataSource
