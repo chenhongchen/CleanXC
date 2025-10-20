@@ -311,6 +311,59 @@
     }
 }
 
+- (BOOL)removeItemRobustAtPath:(NSString *)path error:(NSError **)outError {
+    NSFileManager *fm = [NSFileManager defaultManager];
+    BOOL isDirectory = NO;
+    if (![fm fileExistsAtPath:path isDirectory:&isDirectory]) {
+        return YES;
+    }
+
+    NSError *removeError = nil;
+    if ([fm removeItemAtPath:path error:&removeError]) {
+        return YES;
+    }
+
+    // Try move to Trash as a fallback
+    NSURL *url = [NSURL fileURLWithPath:path];
+    NSError *trashError = nil;
+    if ([fm respondsToSelector:@selector(trashItemAtURL:resultingItemURL:error:)]) {
+        if ([fm trashItemAtURL:url resultingItemURL:nil error:&trashError]) {
+            return YES;
+        }
+    }
+
+    // Final fallback: recursively delete contents, relax permissions if needed
+    if (isDirectory) {
+        NSArray *contents = [fm contentsOfDirectoryAtPath:path error:nil] ?: @[];
+        for (NSString *name in contents) {
+            NSString *child = [path stringByAppendingPathComponent:name];
+            // Best-effort: ensure writable before delete
+            NSDictionary *attrs = [fm attributesOfItemAtPath:child error:nil];
+            if (attrs) {
+                NSString *fileType = attrs[NSFileType];
+                NSMutableDictionary *perms = [NSMutableDictionary dictionary];
+                if ([fileType isEqualToString:NSFileTypeDirectory]) {
+                    perms[NSFilePosixPermissions] = @(0700);
+                } else {
+                    perms[NSFilePosixPermissions] = @(0600);
+                }
+                [fm setAttributes:perms ofItemAtPath:child error:nil];
+            }
+            [self removeItemRobustAtPath:child error:nil];
+        }
+        // Try removing the now-empty directory
+        removeError = nil;
+        if ([fm removeItemAtPath:path error:&removeError]) {
+            return YES;
+        }
+    }
+
+    if (outError) {
+        *outError = removeError ?: trashError;
+    }
+    return NO;
+}
+
 - (void)cleanButtonClicked:(id)sender {
     NSAlert *alert = [[NSAlert alloc] init];
     alert.messageText = @"确认清理";
@@ -369,12 +422,13 @@
                     NSString *childPath = child[@"path"];
                     if (![self.selectedDeviceSupportChildren containsObject:childPath]) return; 
                     if ([fileManager fileExistsAtPath:childPath]) {
-                        NSError *err;
-                        [fileManager removeItemAtPath:childPath error:&err];
-                        if (!err) {
+                        NSError *err = nil;
+                        if ([self removeItemRobustAtPath:childPath error:&err]) {
                             totalCleaned += [child[@"size"] longLongValue];
                             [indexesToRemove addIndex:idx];
                             didClean = YES;
+                        } else {
+                            NSLog(@"Failed to delete %@: %@", childPath, err.localizedDescription);
                         }
                     } else {
                         // 如果本就不存在，也从列表移除
@@ -393,11 +447,12 @@
                 if ([fileManager fileExistsAtPath:path]) {
                     // 其它根目录，仅当被勾选时才清理
                     if ([self.selectedRootPaths containsObject:path]) {
-                        NSError *error;
-                        [fileManager removeItemAtPath:path error:&error];
-                        if (!error) {
+                        NSError *error = nil;
+                        if ([self removeItemRobustAtPath:path error:&error]) {
                             totalCleaned += size;
                             didClean = YES;
+                        } else {
+                            NSLog(@"Failed to delete %@: %@", path, error.localizedDescription);
                         }
                     }
                 }
